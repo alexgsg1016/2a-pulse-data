@@ -49,6 +49,19 @@ html,body{margin:0;background:#F7F3EA}
       <p style="margin: 0; color: #3A362F; font-size: 18px; line-height: 1.6; max-width: 640px; font-size: 20px">We study financial markets, digital assets and the people who invest in them. Every project starts from public or properly collected data, publishes its method, and says plainly what it cannot tell you.</p>
     </div>
   </section>
+  <section id="tA-vis1" style="display: none">
+    <div style="max-width: 1280px; margin: 0 auto; padding-left: 32px; padding-right: 32px; padding-bottom: 72px; display: flex; flex-direction: column; gap: 14px">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px">
+        <svg id="tA-bar" viewBox="0 0 1000 140" preserveAspectRatio="none" style="width: 100%; height: clamp(90px, 14vw, 170px); display: block; border-radius: 6px" role="img" aria-label="2A Pulse, one bar per day"></svg>
+        <div style="display: flex; justify-content: space-between; gap: 12px; font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B655A"><span id="tA-bar-from"></span><span id="tA-bar-to"></span></div>
+        <figcaption style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 32px; font-size: 14px; color: #4A453D">
+          <span>Every archived day of <a href="/projects/2a-pulse/">2A Pulse</a>, one bar per day. Hover a bar to read it.</span>
+          <span style="display: inline-flex; align-items: center; gap: 10px; font-family: 'Geist Mono', monospace; font-size: 12px">25 fear <span aria-hidden="true" style="display: inline-block; width: 120px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #3554D1, #EDE6D8, #D2622A)"></span> 75 greed</span>
+        </figcaption>
+      </figure>
+      <div id="tA-bar-stats" style="display: flex; flex-wrap: wrap; gap: 12px 48px; padding-top: 18px; border-top: 1px solid #DDD5C6"></div>
+    </div>
+  </section>
   <section style="border-top: 1px solid #DDD5C6; ">
     <div style="max-width: 1280px; margin: 0 auto; padding-left: 32px; padding-right: 32px; padding-top: 96px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 40px">
       <div style="display: flex; flex-direction: column; gap: 16px">
@@ -115,7 +128,10 @@ html,body{margin:0;background:#F7F3EA}
         <div style="font-family: 'Michroma', sans-serif; font-size: 11px; letter-spacing: 0.3em; color: #5C574E">DATA</div>
         <h2 style="margin: 0; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(36px, 5vw, 64px); line-height: 1; letter-spacing: -0.02em">Use our data.</h2>
       </div>
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px 40px">
+      <figure id="tA-vis2" style="display: none; margin: 0; flex-direction: column; gap: 10px">
+        <div id="tA-heat" style="display: flex; flex-direction: column; gap: 4px"></div>
+        <figcaption style="font-size: 14px; color: #4A453D">Each row is one of the five 2A Pulse signals; each column is one day. Darker blue is a fear reading, darker orange a greed reading (0 to 100).</figcaption>
+      </figure><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px 40px">
         <p style="margin: 0; color: #3A362F; font-size: 18px; line-height: 1.6; max-width: 640px">The full 2A Pulse history is published as a public, append-only archive. Archived days are never edited, so every number stays citable.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 12px">
           <a href="https://raw.githubusercontent.com/alexgsg1016/2a-pulse-data/main/data/pulse-history.csv" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 26px; border-radius: 999px; background: #0B0B0B; color: #F7F3EA; text-decoration: none; font-weight: 500; font-size: 15px">Open the CSV</a>
@@ -124,6 +140,35 @@ html,body{margin:0;background:#F7F3EA}
       </div>
     </div>
   </section>
+<script>
+(function(){
+  var URL='https://raw.githubusercontent.com/alexgsg1016/2a-pulse-data/main/data/pulse-history.json';
+  function col(v,lo,hi){var F=[53,84,209],M=[237,230,216],G=[210,98,42],t=Math.max(0,Math.min(1,(v-lo)/(hi-lo))),a,b,u;
+    if(t<.5){a=F;b=M;u=t*2;}else{a=M;b=G;u=(t-.5)*2;}
+    return 'rgb('+a.map(function(x,i){return Math.round(x+(b[i]-x)*u);}).join(',')+')';}
+  function fmt(d){return new Date(d+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
+  if(!window.fetch)return;
+  fetch(URL,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+    var rows=j.rows||[],n=rows.length;if(n<10)throw 0;
+    /* 1. barcode */
+    var W=1000,H=140,bw=W/n,s='';
+    rows.forEach(function(r,i){s+='<rect x="'+(i*bw).toFixed(2)+'" y="0" width="'+(bw+.6).toFixed(2)+'" height="'+H+'" fill="'+col(r.score,25,75)+'"><title>'+fmt(r.date)+': '+r.score.toFixed(1)+' '+r.band+'</title></rect>';});
+    document.getElementById('tA-bar').innerHTML=s;
+    document.getElementById('tA-bar-from').textContent=fmt(rows[0].date);
+    document.getElementById('tA-bar-to').textContent=fmt(rows[n-1].date);
+    var hi=rows.reduce(function(a,b){return b.score>a.score?b:a;}),lo=rows.reduce(function(a,b){return b.score<a.score?b:a;}),last=rows[n-1];
+    var stat=function(k,v,sub){return '<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:Michroma,sans-serif;font-size:10px;letter-spacing:.26em;color:#6B655A">'+k+'</span><span style="font-family:\'Instrument Serif\',serif;font-size:40px;line-height:1">'+v+'</span><span style="font-size:13px;color:#4A453D">'+sub+'</span></div>';};
+    document.getElementById('tA-bar-stats').innerHTML=stat('DAYS ARCHIVED',n,'since '+fmt(rows[0].date))+stat('LATEST',last.score.toFixed(1),last.band+' · '+fmt(last.date))+stat('HIGHEST',hi.score.toFixed(1),fmt(hi.date))+stat('LOWEST',lo.score.toFixed(1),fmt(lo.date));
+    document.getElementById('tA-vis1').style.display='block';
+    /* 2. signal heatmap */
+    var sig=[['Momentum','momentum'],['Volatility','volatility'],['Funding','funding'],['Stablecoins','stablecoins'],['Volume','volume']],h='';
+    sig.forEach(function(sg){var cells='';rows.forEach(function(r,i){cells+='<rect x="'+(i*bw).toFixed(2)+'" y="0" width="'+(bw+.6).toFixed(2)+'" height="30" fill="'+col(r[sg[1]],0,100)+'"><title>'+sg[0]+', '+fmt(r.date)+': '+r[sg[1]].toFixed(1)+'</title></rect>';});
+      h+='<div style="display:flex;align-items:center;gap:14px"><span style="flex:0 0 96px;font-size:13px;color:#3A362F">'+sg[0]+'</span><svg viewBox="0 0 1000 30" preserveAspectRatio="none" style="flex:1;min-width:0;height:30px;display:block;border-radius:3px" role="img" aria-label="'+sg[0]+' score per day">'+cells+'</svg></div>';});
+    document.getElementById('tA-heat').innerHTML=h;
+    document.getElementById('tA-vis2').style.display='flex';
+  }).catch(function(){/* archive unreachable: the page reads fine without the visuals */});
+})();
+</script>
 
   <!-- FOOTER -->
   <footer style="border-top: 1px solid #DDD5C6">
