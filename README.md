@@ -13,7 +13,7 @@ The public, append-only record of **2A Pulse**, the Bitcoin market sentiment ind
 | [`data/latest.json`](data/latest.json) | The most recent day only. |
 | [`scripts/pulse.mjs`](scripts/pulse.mjs) | The program that computes the index. |
 | [`.github/workflows/daily.yml`](.github/workflows/daily.yml) | Runs the program every day at 01:30 UTC. |
-| [`website/`](website) | Backup copies of the code pasted into 2aresearch.org (dashboard v0.3, homepage, projects page). |
+| [`website/`](website) | Backup copies of the code pasted into 2aresearch.org (dashboard v0.4, homepage, projects page). |
 
 ## How the archive works
 
