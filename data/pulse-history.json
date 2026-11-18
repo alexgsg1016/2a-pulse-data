@@ -11,7 +11,7 @@
   "volume": 0.1
  },
  "note": "Append-only daily archive. Each row is one completed UTC day. recorded = backfill (reconstructed when the archive started), daily (computed the morning after that day closed) or catch-up (a missed day filled in later).",
- "updated_at_utc": "2026-11-17T09:26:20.833Z",
+ "updated_at_utc": "2026-11-18T08:44:15.337Z",
  "rows": [
   {
    "date": "2026-06-29",
@@ -3678,6 +3678,32 @@
    "method": "v0.2",
    "recorded": "daily",
    "computed_at_utc": "2026-11-17T09:26:20Z"
+  },
+  {
+   "date": "2026-11-17",
+   "score": 22.5,
+   "band": "Extreme fear",
+   "momentum": 0,
+   "volatility": 34.6,
+   "funding": 33.7,
+   "stablecoins": 0,
+   "volume": 71.9,
+   "pts_momentum": 0,
+   "pts_volatility": 6.9,
+   "pts_funding": 8.4,
+   "pts_stablecoins": 0,
+   "pts_volume": 7.2,
+   "btc_close_usd": 64889,
+   "raw_momentum_pct_vs_30d_avg": -14.7636,
+   "raw_volatility_ratio_14d_90d": 1.2568,
+   "raw_funding_pct_per_8h": 0.001739,
+   "raw_stablecoin_change_pct_30d": -5.3378,
+   "raw_volume_ratio_7d_30d": 1.2187,
+   "fear_greed_altme": 12,
+   "price_source": "CoinGecko",
+   "method": "v0.2",
+   "recorded": "daily",
+   "computed_at_utc": "2026-11-18T08:44:15Z"
   }
  ]
 }
